@@ -3,21 +3,26 @@
 
 using namespace std;
 
-class UserInterface
+class PriceList
 {
 private:
-	/*AddClientScreen* ptrAddClientScreen;
-	TimeTable* ptrTimeTable;
-	EditDeleteScreen ptrEditDeleteScreen;
-	PriceList* ptrPriceList;
-	ExpensesTable* ptrExpensesTable;
-	AddExpensesScreen* ptrAddExpensesScreen;
-	Report* ptrReport; */
-	char choice;
+	string ServiceName;
+	float ServicePrice;
+	unsigned int RecordNum;
 public:
-	UserInterface();
-	~UserInterface();
-	void Menu();
+	void ShowPrices();
+};
+
+class AddClientScreen
+{
+private:
+	/*ClientRecord* ptrClientRecord; */
+	string ClName, SerName, CInfo, DateTime2, line, SerPrice;
+	unsigned int RecNum;
+	PriceList* ptrPriceList;
+public:
+	void setClient();
+	/*void insertClient(); */
 };
 /*
 class ClientRecord
@@ -34,18 +39,35 @@ public:
 	string getServiceName();
 	string getDateTime();
 	float getServicePrice();
-};
+}; */
 
-class AddClientScreen
+
+
+
+
+class UserInterface
 {
 private:
-	ClientRecord* ptrClientRecord;
 	PriceList* ptrPriceList;
+	AddClientScreen* ptrAddClientScreen;
+	/*
+	TimeTable* ptrTimeTable;
+	EditDeleteScreen ptrEditDeleteScreen;
+	
+	ExpensesTable* ptrExpensesTable;
+	AddExpensesScreen* ptrAddExpensesScreen;
+	Report* ptrReport; */
+	char choice;
 public:
-	void setClient();
-	void insertClient();
+	UserInterface();
+	~UserInterface();
+	void Menu();
 };
 
+
+
+
+/*
 class TimeTable
 {
 private:
@@ -82,17 +104,9 @@ private:
 public:
 	void DeleteClient();
 };
+*/
 
-class PriceList
-{
-private:
-	string ServiceName;
-	float ServicePrice;
-	unsigned int RecordNum;
-public:
-	void ShowPrices();
-};
-
+/*
 class ExpensesTable
 {
 private:
