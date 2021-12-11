@@ -98,12 +98,15 @@ void AddClientScreen::setClient()
 	//getaLine(ClName);
 	cout << "Введите Информацию о машине: " << endl;
 	cin >> CInfo;
+	// cin.getline(CInfo, 50);
+	//cin.ignore(numeric_limits<streamsize>::max(),' ');
+	//cin>> 
 	//getaLine(CInfo);
 	PriceList a;
 	a.ShowPrices();
 	cout << "Введите Номер услуги: " << endl;
 	cin >> RecNum;
-	ifstream in("C:\\CarProject\\PriceList.txt");
+	ifstream in("P:\\TP\\TeamProject\\Car\\CarProject\\PriceList.txt");
 	if (in.is_open())
 	{
 		while (getline(in, line))
@@ -115,6 +118,8 @@ void AddClientScreen::setClient()
 		}
 	}
 	in.close();
+
+
 
 	cout << ClName << endl;
 	cout << CInfo << endl;
@@ -136,7 +141,7 @@ void PriceList::ShowPrices()
 		}
 		F.close();
 	} */
-	ifstream in("C:\\CarProject\\PriceList.txt"); 
+	ifstream in("P:\\TP\\TeamProject\\Car\\CarProject\\PriceList.txt"); 
 	if (in.is_open())
 	{
 		while (getline(in, ServiceName))
@@ -146,5 +151,46 @@ void PriceList::ShowPrices()
 	}
 	in.close();     // закрываем файл
 
-	cout << "End of program" << endl;
+	//cout << "End of program" << endl;
+}
+
+ClientRecord::ClientRecord(string CName, string SName, string CarInfo, string DateTime, float SPrice, unsigned int RNum) :
+	ClientName(CName), ServiceName(SName), CarInfo(CarInfo), DateTime(DateTime), ServicePrice(SPrice), RecordNum(RNum)
+{
+
+}//конструктор
+
+ClientRecord::~ClientRecord()
+{
+
+}//деструктор
+
+string ClientRecord::getClientName()
+{
+	return ClientName;
+}
+
+string ClientRecord::getClientCarInfo()
+{
+	return CarInfo;
+}
+
+string ClientRecord::getServiceName()
+{
+	return ServiceName;
+}
+
+string ClientRecord::getDateTime()
+{
+	return DateTime;
+}
+
+float ClientRecord::getServicePrice()
+{
+	return ServicePrice;
+}
+
+void TimeTable::ShowTimeTable()
+{
+	cout << "НомерЗаписи\tИмяКлиента\tУслуга\tСтоимостьУслуги\tВремяЗаписи" << endl;
 }

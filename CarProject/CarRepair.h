@@ -24,7 +24,7 @@ public:
 	void setClient();
 	/*void insertClient(); */
 };
-/*
+
 class ClientRecord
 {
 private:
@@ -39,10 +39,16 @@ public:
 	string getServiceName();
 	string getDateTime();
 	float getServicePrice();
-}; */
+}; 
 
 
-
+class TimeTable
+{
+private:
+	ClientRecord* ptrClientRecord;
+public:
+	void ShowTimeTable();
+};
 
 
 class UserInterface
@@ -50,9 +56,9 @@ class UserInterface
 private:
 	PriceList* ptrPriceList;
 	AddClientScreen* ptrAddClientScreen;
-	/*
+	
 	TimeTable* ptrTimeTable;
-	EditDeleteScreen ptrEditDeleteScreen;
+	/*EditDeleteScreen ptrEditDeleteScreen;
 	
 	ExpensesTable* ptrExpensesTable;
 	AddExpensesScreen* ptrAddExpensesScreen;
@@ -67,15 +73,9 @@ public:
 
 
 
-/*
-class TimeTable
-{
-private:
-	ClientRecord* ptrClientRecord;
-public:
-	void ShowTimeTable();
-};
 
+
+/*
 class EditDeleteScreen
 {
 private:
