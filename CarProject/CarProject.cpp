@@ -1,19 +1,13 @@
-﻿#include <iostream>
+﻿#include <stdio.h>
+#include <iostream>
 #include <fstream>
 #include "CarRepair.h"
 
 using namespace std;
 
-void getaLine(string& inStr) // получение строки текста
-{
-	char temp[21];
-	cin.get(temp, 20, '\n');
-	cin.ignore(20, '\n'); //число пропускаемых символов и символ разделения
-	inStr = temp;
-}
-
 UserInterface::UserInterface()
 {
+	ptrTimeTable = new TimeTable;
 
 }
 UserInterface::~UserInterface()
@@ -22,6 +16,8 @@ UserInterface::~UserInterface()
 }
 void UserInterface::Menu()
 {
+	while (true)
+	{
 		cout << "Добро пожаловать" << endl;
 		cout << "1. Добавить запись" << endl;
 		cout << "2. Посмотреть расписание" << endl;
@@ -39,14 +35,18 @@ void UserInterface::Menu()
 		case '1':
 		{
 			cout << "добавление записи" << endl;
-			AddClientScreen b;
-			b.setClient();
+			ptrAddClientScreen = new AddClientScreen(ptrTimeTable);
+			ptrAddClientScreen->setClient();
+			delete ptrAddClientScreen;
+			system("pause");
 			break;
 		}
 		case '2':
 		{
 			cout << "Расписание" << endl;
 			cout << "НомерЗаписи\tИмяКлиента\tУслуга\tСтоимостьУслуги\tВремяЗаписи" << endl;
+			ptrTimeTable->ShowTimeTable();
+			system("pause");
 			break;
 		}
 		case '3':
@@ -88,60 +88,66 @@ void UserInterface::Menu()
 			cout << "Нет такого пункта" << endl;
 			break;
 		}
-		} 
-	} 
+		}
+		system("cls");
+	}
+} 
 
 void AddClientScreen::setClient()
 {
-	cout << "Введите Имя клиента: " << endl;
-	cin >> ClName;
-	//getaLine(ClName);
-	cout << "Введите Информацию о машине: " << endl;
-	cin >> CInfo;
-	// cin.getline(CInfo, 50);
-	//cin.ignore(numeric_limits<streamsize>::max(),' ');
-	//cin>> 
-	//getaLine(CInfo);
+	cout << "Введите Имя и Фамилию клиента:" << endl;
+	cin >> ClFirstName;
+	cin >> ClSecondName;
+	cout << "Введите марку и модель машины:" << endl;
+	cin >> CBrand;
+	cin >> CModel;
 	PriceList a;
 	a.ShowPrices();
 	cout << "Введите Номер услуги: " << endl;
-	cin >> RecNum;
-	ifstream in("P:\\TP\\TeamProject\\Car\\CarProject\\PriceList.txt");
+	cin >> SerNum;
+	//ifstream in (".\\PriceList.txt"); //for .exe
+	ifstream in ("../PriceList.txt");
+	
 	if (in.is_open())
 	{
 		while (getline(in, line))
 		{
-			if (line.find(to_string(RecNum)) != string::npos) {
+			if (line.find(to_string(SerNum)) != string::npos) {
 				SerName = line.substr(3, 13);
-				SerPrice= line.substr(16, 4);
+				SerPrice= stof(line.substr(16, 4));
 			}
 		}
 	}
 	in.close();
 
-
-
-	cout << ClName << endl;
-	cout << CInfo << endl;
-	cout << RecNum << endl;  
+	cout << "Введите дату выполнения услуги(YYYY MM DD hh mm):" << endl;
+	cin >> year;
+	cin >> month;
+	cin >> day;
+	cin >> hour;
+	cin >> minute;
+	int x = 1;
+	//debug
+	/*
+	cout << ClFirstName << endl;
+	cout << ClSecondName << endl;
+	cout << CBrand << endl;
+	cout << CModel << endl;
+	cout << SerNum << endl;  
 	cout << SerName << endl; 
-	cout << SerPrice << endl;;
+	cout << SerPrice << endl;
+	cout << year << month << day << hour << minute << endl;
+	*/
+	
+	ClientRecord* ptrClientRecord = new ClientRecord(x, ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
+	ptrTimeTable->InsertClient(ptrClientRecord);
+	
 
 }
 void PriceList::ShowPrices()
 {
-	/*fstream F;
-	F.open("C:\\CarProject\\PriceList.txt");
-	if (F)
-	{
-		while (!F.eof())
-		{
-			F >> ServiceName;
-			cout << ServiceName << endl;
-		}
-		F.close();
-	} */
-	ifstream in("P:\\TP\\TeamProject\\Car\\CarProject\\PriceList.txt"); 
+	//ifstream in (".\\PriceList.txt"); //for .exe
+	ifstream in ("../PriceList.txt");
 	if (in.is_open())
 	{
 		while (getline(in, ServiceName))
@@ -150,47 +156,98 @@ void PriceList::ShowPrices()
 		}
 	}
 	in.close();     // закрываем файл
-
-	//cout << "End of program" << endl;
 }
 
-ClientRecord::ClientRecord(string CName, string SName, string CarInfo, string DateTime, float SPrice, unsigned int RNum) :
-	ClientName(CName), ServiceName(SName), CarInfo(CarInfo), DateTime(DateTime), ServicePrice(SPrice), RecordNum(RNum)
+ClientRecord::ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB, string CM, string SN,
+	unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP) : //конструктор
+	RecordNum(RN), ClFirstName(ClFN), ClSecondName(ClSN), CBrand(CB), CModel(CM), SerName(SN), year(yy), month(mm),
+	day(dd), hour(hh), minute(mint), SerPrice(SP)
 {
 
-}//конструктор
-
-ClientRecord::~ClientRecord()
-{
-
-}//деструктор
-
-string ClientRecord::getClientName()
-{
-	return ClientName;
 }
 
-string ClientRecord::getClientCarInfo()
+ClientRecord::~ClientRecord() //деструктор
 {
-	return CarInfo;
+
+}
+
+unsigned int ClientRecord::getRecordNum()
+{
+	return RecordNum;
+}
+
+string ClientRecord::getClientFirstName()
+{
+	return ClFirstName;
+}
+
+string ClientRecord::getClientSecondName()
+{
+	return ClSecondName;
+}
+
+string ClientRecord::getCarBrand()
+{
+	return CBrand;
+}
+
+string ClientRecord::getCarModel()
+{
+	return CModel;
 }
 
 string ClientRecord::getServiceName()
 {
-	return ServiceName;
+	return SerName;
 }
 
-string ClientRecord::getDateTime()
+unsigned int ClientRecord::getYear()
 {
-	return DateTime;
+	return year;
+}
+
+unsigned int ClientRecord::getMonth()
+{
+	return month;
+}
+
+unsigned int ClientRecord::getDay()
+{
+	return day;
+}
+
+unsigned int ClientRecord::getHour()
+{
+	return hour;
+}
+
+unsigned int ClientRecord::getMinute()
+{
+	return minute;
 }
 
 float ClientRecord::getServicePrice()
 {
-	return ServicePrice;
+	return SerPrice;
 }
 
 void TimeTable::ShowTimeTable()
 {
-	cout << "НомерЗаписи\tИмяКлиента\tУслуга\tСтоимостьУслуги\tВремяЗаписи" << endl;
+	//cout << "\nApt#\tИмя жильца\n-------------------\n";
+	if (ptrClientRecord.empty()) // если список жильцов пуст
+		cout << "Нет жильцов\n" << endl; // выводим запись, что он пуст)
+	else
+	{
+		iter = ptrClientRecord.begin();
+		while (iter != ptrClientRecord.end()) // распечатываем всех жильцов
+		{
+			cout << (*iter)->getClientFirstName() << " || " << (*iter)->getClientSecondName() << endl;
+			*iter++;
+		}
+	}
+}
+
+void TimeTable::InsertClient(ClientRecord* ptrCR)
+{
+	ptrClientRecord.push_back(ptrCR);
 }

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <list>
 
 using namespace std;
 
@@ -13,50 +14,61 @@ public:
 	void ShowPrices();
 };
 
-class AddClientScreen
-{
-private:
-	/*ClientRecord* ptrClientRecord; */
-	string ClName, SerName, CInfo, DateTime2, line, SerPrice;
-	unsigned int RecNum;
-	PriceList* ptrPriceList;
-public:
-	void setClient();
-	/*void insertClient(); */
-};
-
 class ClientRecord
 {
 private:
-	string ClientName, ServiceName, CarInfo, DateTime;
-	float ServicePrice;
-	unsigned int RecordNum;
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel;
+	float SerPrice;
+	unsigned int RecordNum, year, month, day, hour, minute;
 public:
-	ClientRecord(string CName, string SName, string CarInfo, string DateTime, float SPrice, unsigned int RNum);
+	ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB, string CM, string SN, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP);
 	~ClientRecord();
-	string getClientName();
-	string getClientCarInfo();
+	unsigned int getRecordNum();
+	string getClientFirstName();
+	string getClientSecondName();
+	string getCarBrand();
+	string getCarModel();
 	string getServiceName();
-	string getDateTime();
+	unsigned int getYear();
+	unsigned int getMonth();
+	unsigned int getDay();
+	unsigned int getHour();
+	unsigned int getMinute();
 	float getServicePrice();
-}; 
-
+};
 
 class TimeTable
 {
 private:
-	ClientRecord* ptrClientRecord;
+	list <ClientRecord*> ptrClientRecord;
+	list <ClientRecord*>::iterator iter;
 public:
 	void ShowTimeTable();
+	void InsertClient(ClientRecord*);
 };
 
+class AddClientScreen
+{
+private:
+	//ClientRecord* ptrClientRecord;
+	TimeTable* ptrTimeTable;
+	PriceList* ptrPriceList;
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel, line;
+	unsigned int SerNum, year, month, day, hour, minute;
+	float SerPrice;
+public:
+	AddClientScreen(TimeTable* ptrTT) : ptrTimeTable(ptrTT)
+	{
+		/* тут пусто */
+	}
+	void setClient();
+};
 
 class UserInterface
 {
 private:
 	PriceList* ptrPriceList;
 	AddClientScreen* ptrAddClientScreen;
-	
 	TimeTable* ptrTimeTable;
 	/*EditDeleteScreen ptrEditDeleteScreen;
 	
