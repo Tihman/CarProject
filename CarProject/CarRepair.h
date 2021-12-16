@@ -1,15 +1,77 @@
 #include <iostream>
 #include <string>
+#include <list>
 
 using namespace std;
+
+class PriceList
+{
+private:
+	string ServiceName;
+	float ServicePrice;
+	unsigned int RecordNum;
+public:
+	void ShowPrices();
+};
+
+class ClientRecord
+{
+private:
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel;
+	float SerPrice;
+	unsigned int RecordNum, year, month, day, hour, minute;
+public:
+	ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB, string CM, string SN, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP);
+	~ClientRecord();
+	unsigned int getRecordNum();
+	string getClientFirstName();
+	string getClientSecondName();
+	string getCarBrand();
+	string getCarModel();
+	string getServiceName();
+	unsigned int getYear();
+	unsigned int getMonth();
+	unsigned int getDay();
+	unsigned int getHour();
+	unsigned int getMinute();
+	float getServicePrice();
+};
+
+class TimeTable
+{
+private:
+	list <ClientRecord*> ptrClientRecord;
+	list <ClientRecord*>::iterator iter;
+public:
+	void ShowTimeTable();
+	void InsertClient(ClientRecord*);
+};
+
+class AddClientScreen
+{
+private:
+	//ClientRecord* ptrClientRecord;
+	TimeTable* ptrTimeTable;
+	PriceList* ptrPriceList;
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel, line;
+	unsigned int SerNum, year, month, day, hour, minute;
+	float SerPrice;
+public:
+	AddClientScreen(TimeTable* ptrTT) : ptrTimeTable(ptrTT)
+	{
+		/* тут пусто */
+	}
+	void setClient();
+};
 
 class UserInterface
 {
 private:
-	/*AddClientScreen* ptrAddClientScreen;
-	TimeTable* ptrTimeTable;
-	EditDeleteScreen ptrEditDeleteScreen;
 	PriceList* ptrPriceList;
+	AddClientScreen* ptrAddClientScreen;
+	TimeTable* ptrTimeTable;
+	/*EditDeleteScreen ptrEditDeleteScreen;
+	
 	ExpensesTable* ptrExpensesTable;
 	AddExpensesScreen* ptrAddExpensesScreen;
 	Report* ptrReport; */
@@ -19,41 +81,13 @@ public:
 	~UserInterface();
 	void Menu();
 };
+
+
+
+
+
+
 /*
-class ClientRecord
-{
-private:
-	string ClientName, ServiceName, CarInfo, DateTime;
-	float ServicePrice;
-	unsigned int RecordNum;
-public:
-	ClientRecord(string CName, string SName, string CarInfo, string DateTime, float SPrice, unsigned int RNum);
-	~ClientRecord();
-	string getClientName();
-	string getClientCarInfo();
-	string getServiceName();
-	string getDateTime();
-	float getServicePrice();
-};
-
-class AddClientScreen
-{
-private:
-	ClientRecord* ptrClientRecord;
-	PriceList* ptrPriceList;
-public:
-	void setClient();
-	void insertClient();
-};
-
-class TimeTable
-{
-private:
-	ClientRecord* ptrClientRecord;
-public:
-	void ShowTimeTable();
-};
-
 class EditDeleteScreen
 {
 private:
@@ -82,17 +116,9 @@ private:
 public:
 	void DeleteClient();
 };
+*/
 
-class PriceList
-{
-private:
-	string ServiceName;
-	float ServicePrice;
-	unsigned int RecordNum;
-public:
-	void ShowPrices();
-};
-
+/*
 class ExpensesTable
 {
 private:
