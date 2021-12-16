@@ -8,6 +8,7 @@ using namespace std;
 UserInterface::UserInterface()
 {
 	ptrTimeTable = new TimeTable;
+	ptrExpensesTable = new ExpensesTable;
 
 }
 UserInterface::~UserInterface()
@@ -16,9 +17,9 @@ UserInterface::~UserInterface()
 }
 void UserInterface::Menu()
 {
+	cout << "Добро пожаловать" << endl;
 	while (true)
 	{
-		cout << "Добро пожаловать" << endl;
 		cout << "1. Добавить запись" << endl;
 		cout << "2. Посмотреть расписание" << endl;
 		cout << "3. Редактировать расписание" << endl;
@@ -60,16 +61,23 @@ void UserInterface::Menu()
 			cout << "Прайс-лист" << endl;
 			PriceList a;
 			a.ShowPrices();
+			system("pause");
 			break;
 		}
 		case '5':
 		{
 			cout << "Ввод расходов" << endl;
+			ptrAddExpensesScreen = new AddExpensesScreen(ptrExpensesTable);
+			ptrAddExpensesScreen->setExpenses();
+			delete ptrAddExpensesScreen;
+			system("pause");
 			break;
 		}
 		case '6':
 		{
 			cout << "Таблица расходов" << endl;
+			ptrExpensesTable->ShowExpensesTable();
+			system("pause");
 			break;
 		}
 		case '7':
@@ -241,7 +249,9 @@ void TimeTable::ShowTimeTable()
 		iter = ptrClientRecord.begin();
 		while (iter != ptrClientRecord.end()) // распечатываем всех жильцов
 		{
-			cout << (*iter)->getClientFirstName() << " || " << (*iter)->getClientSecondName() << endl;
+			cout << (*iter)->getClientFirstName() << " " << (*iter)->getClientSecondName() << " | | " << (*iter)->getCarBrand() << " " << (*iter)->getCarModel() << " | | "
+				<< (*iter)->getServiceName() << " | | " << (*iter)->getYear() << "-" << (*iter)->getMonth() << "-" << (*iter)->getDay() << " " << (*iter)->getHour() << ":"
+				<< (*iter)->getMinute() << " | | " << (*iter)->getServicePrice() << endl;
 			*iter++;
 		}
 	}
@@ -250,4 +260,45 @@ void TimeTable::ShowTimeTable()
 void TimeTable::InsertClient(ClientRecord* ptrCR)
 {
 	ptrClientRecord.push_back(ptrCR);
+}
+
+void ExpensesTable::insertExpenses(Expenses* ptrExp)
+{
+	vecptrExpenses.push_back(ptrExp);
+}
+
+void ExpensesTable::ShowExpensesTable()
+{
+	//cout << "\nДата\tПолучатель\tСумма\tКатегория\n" << "----------------------------------------\n" << endl;
+	if (vecptrExpenses.size() == 0) 
+		cout << "Расходов нет\n" << endl;
+	else
+	{
+		iter = vecptrExpenses.begin();
+		while (iter != vecptrExpenses.end())
+		{ 
+			cout << (*iter)->Product << " | | " << (*iter)->year << " | | " << (*iter)->month << " | | " << (*iter)->day << " | | " << (*iter)->Cost << endl;
+			iter++;
+		}
+		cout << endl;
+	}
+}
+
+AddExpensesScreen::AddExpensesScreen(ExpensesTable* ExpTab) : ptrExpensesTable(ExpTab)
+{
+	/*пусто*/
+}
+
+void AddExpensesScreen::setExpenses()
+{
+	cout << "Введите что израсходовали: ";
+	cin >> Product;
+	cout << "Введите дату расхода(YYYY MM DD): ";
+	cin >> year;
+	cin >> month;
+	cin >> day;
+	cout << "Введите стоимость расхода: ";
+	cin >> Cost;
+	Expenses* ptrExpenses = new Expenses(Product, year, month, day, Cost);
+	ptrExpensesTable->insertExpenses(ptrExpenses);
 }

@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 using namespace std;
 
@@ -64,17 +65,61 @@ public:
 	void setClient();
 };
 
+class Expenses
+{
+public:
+	string Product;
+	unsigned int year, month, day;
+	float Cost;
+	Expenses(string P, unsigned int y, unsigned int m, unsigned int d, float cost) :
+		Product(P), year(y), month(m), day(d)
+	{
+		/* */
+	}
+	/*
+	string getProduct();
+	unsigned int getYear();
+	unsigned int getMonth();
+	unsigned int getDay();
+	unsigned int getHour();
+	unsigned int getMinute();
+	float getCost();
+	*/
+};
+
+class ExpensesTable
+{
+private:
+	vector<Expenses*> vecptrExpenses;
+	vector<Expenses*>::iterator iter;
+public:
+	//~ExpensesTable();
+	void insertExpenses(Expenses*);
+	void ShowExpensesTable();
+};
+
+class AddExpensesScreen
+{
+private:
+	ExpensesTable* ptrExpensesTable;
+	string Product;
+	unsigned int year, month, day;
+	float Cost;
+public:
+	AddExpensesScreen(ExpensesTable*);
+	void setExpenses();
+};
+
 class UserInterface
 {
 private:
 	PriceList* ptrPriceList;
 	AddClientScreen* ptrAddClientScreen;
 	TimeTable* ptrTimeTable;
-	/*EditDeleteScreen ptrEditDeleteScreen;
-	
+	//EditDeleteScreen ptrEditDeleteScreen;
 	ExpensesTable* ptrExpensesTable;
 	AddExpensesScreen* ptrAddExpensesScreen;
-	Report* ptrReport; */
+	//Report* ptrReport; 
 	char choice;
 public:
 	UserInterface();
@@ -119,33 +164,11 @@ public:
 */
 
 /*
-class ExpensesTable
-{
-private:
-	Expenses* ptrExpenses;
-public:
-	void ShowExpensesTable();
-};
 
-class Expenses
-{
-private:
-	string Product, DateTime;
-	float Cost;
-public:
-	string getProduct();
-	float getCost();
-	string getDateTime();
-};
 
-class AddExpensesScreen
-{
-private:
-	Expenses* ptrExpenses;
-public:
-	void setExpenses();
-	void insertExpenses();
-};
+
+
+
 class Report
 {
 private:
