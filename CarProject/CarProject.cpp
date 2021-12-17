@@ -9,6 +9,7 @@ UserInterface::UserInterface()
 {
 	ptrTimeTable = new TimeTable;
 	ptrExpensesTable = new ExpensesTable;
+	ptrEditDeleteScreen = new EditDeleteScreen;
 
 }
 UserInterface::~UserInterface()
@@ -53,7 +54,7 @@ void UserInterface::Menu()
 		case '3':
 		{
 			cout << "Редактирование расписания" << endl;
-
+			ptrEditDeleteScreen->getRecordDate();
 			break;
 		}
 		case '4':
@@ -134,7 +135,7 @@ void AddClientScreen::setClient()
 	cin >> day;
 	cin >> hour;
 	cin >> minute;
-	int x = 1;
+	
 	//debug
 	/*
 	cout << ClFirstName << endl;
@@ -147,7 +148,7 @@ void AddClientScreen::setClient()
 	cout << year << month << day << hour << minute << endl;
 	*/
 	
-	ClientRecord* ptrClientRecord = new ClientRecord(x, ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
+	ClientRecord* ptrClientRecord = new ClientRecord(ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
 	ptrTimeTable->InsertClient(ptrClientRecord);
 	
 
@@ -166,9 +167,9 @@ void PriceList::ShowPrices()
 	in.close();     // закрываем файл
 }
 
-ClientRecord::ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB, string CM, string SN,
+ClientRecord::ClientRecord(string ClFN, string ClSN, string CB, string CM, string SN,
 	unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP) : //конструктор
-	RecordNum(RN), ClFirstName(ClFN), ClSecondName(ClSN), CBrand(CB), CModel(CM), SerName(SN), year(yy), month(mm),
+	ClFirstName(ClFN), ClSecondName(ClSN), CBrand(CB), CModel(CM), SerName(SN), year(yy), month(mm),
 	day(dd), hour(hh), minute(mint), SerPrice(SP)
 {
 
@@ -177,11 +178,6 @@ ClientRecord::ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB,
 ClientRecord::~ClientRecord() //деструктор
 {
 
-}
-
-unsigned int ClientRecord::getRecordNum()
-{
-	return RecordNum;
 }
 
 string ClientRecord::getClientFirstName()
@@ -277,7 +273,7 @@ void ExpensesTable::ShowExpensesTable()
 		iter = vecptrExpenses.begin();
 		while (iter != vecptrExpenses.end())
 		{ 
-			cout << (*iter)->Product << " | | " << (*iter)->year << " | | " << (*iter)->month << " | | " << (*iter)->day << " | | " << (*iter)->Cost << endl;
+			cout << (*iter)->Product << " | | " << (*iter)->year << "-" << (*iter)->month << "-" << (*iter)->day << " | | " << (*iter)->Cost << endl;
 			iter++;
 		}
 		cout << endl;
@@ -301,4 +297,32 @@ void AddExpensesScreen::setExpenses()
 	cin >> Cost;
 	Expenses* ptrExpenses = new Expenses(Product, year, month, day, Cost);
 	ptrExpensesTable->insertExpenses(ptrExpenses);
+}
+
+unsigned int EditDeleteScreen::getRecordDate()
+{
+	ptrTimeTable->ShowTimeTable();
+	cout << "Введите дату записи, которую хотите редактировать(YYYY MM DD hh mm):" << endl;
+	cin >> year;
+	cin >> month;
+	cin >> day;
+	cin >> hour;
+	cin >> minute;
+	cout << "Изменить - 1\nУдалить - 2\nВыбор:" << endl;
+	cin >> choice;
+	switch (choice)
+	{
+	case 1:
+	{
+		ptrEditClientScreen = new EditClientScreen();
+		ptrEditClientScreen->EditInfo();
+		delete ptrEditClientScreen;
+	}
+	case 2:
+	{
+
+	}
+	default:
+		break;
+	}
 }

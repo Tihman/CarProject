@@ -20,11 +20,10 @@ class ClientRecord
 private:
 	string ClFirstName, ClSecondName, SerName, CBrand, CModel;
 	float SerPrice;
-	unsigned int RecordNum, year, month, day, hour, minute;
+	unsigned int year, month, day, hour, minute;
 public:
-	ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB, string CM, string SN, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP);
+	ClientRecord(string ClFN, string ClSN, string CB, string CM, string SN, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP);
 	~ClientRecord();
-	unsigned int getRecordNum();
 	string getClientFirstName();
 	string getClientSecondName();
 	string getCarBrand();
@@ -71,8 +70,8 @@ public:
 	string Product;
 	unsigned int year, month, day;
 	float Cost;
-	Expenses(string P, unsigned int y, unsigned int m, unsigned int d, float cost) :
-		Product(P), year(y), month(m), day(d)
+	Expenses(string P, unsigned int y, unsigned int m, unsigned int d, float ct) :
+		Product(P), year(y), month(m), day(d), Cost(ct)
 	{
 		/* */
 	}
@@ -110,40 +109,6 @@ public:
 	void setExpenses();
 };
 
-class UserInterface
-{
-private:
-	PriceList* ptrPriceList;
-	AddClientScreen* ptrAddClientScreen;
-	TimeTable* ptrTimeTable;
-	//EditDeleteScreen ptrEditDeleteScreen;
-	ExpensesTable* ptrExpensesTable;
-	AddExpensesScreen* ptrAddExpensesScreen;
-	//Report* ptrReport; 
-	char choice;
-public:
-	UserInterface();
-	~UserInterface();
-	void Menu();
-};
-
-
-
-
-
-
-/*
-class EditDeleteScreen
-{
-private:
-	TimeTable* ptrTimeTable;
-	EditClientScreen* ptrEditClientScreen;
-	DeleteClientScreen* ptrDeleteClientScreen;
-	unsigned int RecordNum;
-public:
-	unsigned int getRecordNum();
-};
-
 class EditClientScreen
 {
 private:
@@ -161,7 +126,35 @@ private:
 public:
 	void DeleteClient();
 };
-*/
+
+
+class EditDeleteScreen
+{
+private:
+	TimeTable* ptrTimeTable;
+	EditClientScreen* ptrEditClientScreen;
+	DeleteClientScreen* ptrDeleteClientScreen;
+	unsigned int year, month, day, hour, minute, choice;
+public:
+	unsigned int getRecordDate();
+};
+
+class UserInterface
+{
+private:
+	PriceList* ptrPriceList;
+	AddClientScreen* ptrAddClientScreen;
+	TimeTable* ptrTimeTable;
+	EditDeleteScreen ptrEditDeleteScreen;
+	ExpensesTable* ptrExpensesTable;
+	AddExpensesScreen* ptrAddExpensesScreen;
+	//Report* ptrReport; 
+	char choice;
+public:
+	UserInterface();
+	~UserInterface();
+	void Menu();
+};
 
 /*
 
