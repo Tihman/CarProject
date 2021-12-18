@@ -40,9 +40,9 @@ public:
 class TimeTable
 {
 private:
+public:
 	list <ClientRecord*> ptrClientRecord;
 	list <ClientRecord*>::iterator iter;
-public:
 	void ShowTimeTable();
 	void InsertClient(ClientRecord*);
 };
@@ -122,11 +122,12 @@ public:
 class DeleteClientScreen
 {
 private:
-	ClientRecord* ptrClientRecord;
+	TimeTable* ptrTimeTable;
+	unsigned int year, month, day, hour, minute;
 public:
-	void DeleteClient();
-};
+	void DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm, TimeTable* ptrTimeTable);
 
+};
 
 class EditDeleteScreen
 {
@@ -136,7 +137,9 @@ private:
 	DeleteClientScreen* ptrDeleteClientScreen;
 	unsigned int year, month, day, hour, minute, choice;
 public:
-	unsigned int getRecordDate();
+	EditDeleteScreen();
+	~EditDeleteScreen();
+	void getRecordDate(TimeTable* ptrTimeTable);
 };
 
 class UserInterface
@@ -144,8 +147,8 @@ class UserInterface
 private:
 	PriceList* ptrPriceList;
 	AddClientScreen* ptrAddClientScreen;
+	EditDeleteScreen* ptrEditDeleteScreen;
 	TimeTable* ptrTimeTable;
-	EditDeleteScreen ptrEditDeleteScreen;
 	ExpensesTable* ptrExpensesTable;
 	AddExpensesScreen* ptrAddExpensesScreen;
 	//Report* ptrReport; 

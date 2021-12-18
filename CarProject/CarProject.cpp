@@ -9,7 +9,7 @@ UserInterface::UserInterface()
 {
 	ptrTimeTable = new TimeTable;
 	ptrExpensesTable = new ExpensesTable;
-	ptrEditDeleteScreen = new EditDeleteScreen;
+	//ptrEditDeleteScreen = new EditDeleteScreen;
 
 }
 UserInterface::~UserInterface()
@@ -54,7 +54,10 @@ void UserInterface::Menu()
 		case '3':
 		{
 			cout << "Редактирование расписания" << endl;
-			ptrEditDeleteScreen->getRecordDate();
+			ptrEditDeleteScreen = new EditDeleteScreen;
+			ptrTimeTable->ShowTimeTable();
+			ptrEditDeleteScreen->getRecordDate(ptrTimeTable);
+			delete ptrEditDeleteScreen;
 			break;
 		}
 		case '4':
@@ -299,9 +302,43 @@ void AddExpensesScreen::setExpenses()
 	ptrExpensesTable->insertExpenses(ptrExpenses);
 }
 
-unsigned int EditDeleteScreen::getRecordDate()
+EditDeleteScreen::EditDeleteScreen()
 {
-	ptrTimeTable->ShowTimeTable();
+
+}
+
+EditDeleteScreen::~EditDeleteScreen()
+{
+
+}
+
+void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm, TimeTable* ptrTimeTable)
+{
+	if (ptrTimeTable->ptrClientRecord.empty()) // если список жильцов пуст
+		cout << "Нет записей" << endl; // выводим запись, что он пуст)
+	else
+	{
+		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
+		while (ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end())
+		{
+			if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour() && mm == (*ptrTimeTable->iter)->getMinute())
+			{
+				//деструктор
+				delete *ptrTimeTable->iter;
+				ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.erase(ptrTimeTable->iter);
+				cout << "Запись успешно удалена" << endl;
+			}
+			else
+			{
+				*ptrTimeTable->iter++;
+			}
+		}
+	}
+}
+
+void EditDeleteScreen::getRecordDate(TimeTable* ptrTimeTable)
+{
+	//ptrTimeTable->ShowTimeTable();
 	cout << "Введите дату записи, которую хотите редактировать(YYYY MM DD hh mm):" << endl;
 	cin >> year;
 	cin >> month;
@@ -314,15 +351,22 @@ unsigned int EditDeleteScreen::getRecordDate()
 	{
 	case 1:
 	{
-		ptrEditClientScreen = new EditClientScreen();
-		ptrEditClientScreen->EditInfo();
-		delete ptrEditClientScreen;
+		//ptrEditClientScreen = new EditClientScreen();
+		//ptrEditClientScreen->EditInfo();
+		//delete ptrEditClientScreen;
+		cout << "1" << endl;
 	}
 	case 2:
 	{
-
+		ptrDeleteClientScreen = new DeleteClientScreen();
+		ptrDeleteClientScreen->DeleteClient(year, month, day, hour, minute, ptrTimeTable);
+		delete ptrDeleteClientScreen;
+		system("Pause");
+		break;
 	}
 	default:
+		cout << "3" << endl;
 		break;
 	}
 }
+
