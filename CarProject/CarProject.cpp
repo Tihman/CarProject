@@ -9,13 +9,13 @@ UserInterface::UserInterface()
 {
 	ptrTimeTable = new TimeTable;
 	ptrExpensesTable = new ExpensesTable;
-	//ptrEditDeleteScreen = new EditDeleteScreen;
-
 }
+
 UserInterface::~UserInterface()
 {
 
 }
+
 void UserInterface::Menu()
 {
 	cout << "Добро пожаловать" << endl;
@@ -31,12 +31,12 @@ void UserInterface::Menu()
 		cout << "8. Выход" << endl;
 		cout << "Введите цифру нужного пункта" << endl;
 		cin >> choice; 
-
+		system("cls");
 		switch (choice)
 		{
 		case '1':
 		{
-			cout << "добавление записи" << endl;
+			cout << "Добавление записи" << endl;
 			ptrAddClientScreen = new AddClientScreen(ptrTimeTable);
 			ptrAddClientScreen->setClient();
 			delete ptrAddClientScreen;
@@ -98,6 +98,7 @@ void UserInterface::Menu()
 		default:
 		{
 			cout << "Нет такого пункта" << endl;
+			system("pause");
 			break;
 		}
 		}
@@ -113,8 +114,9 @@ void AddClientScreen::setClient()
 	cout << "Введите марку и модель машины:" << endl;
 	cin >> CBrand;
 	cin >> CModel;
-	PriceList a;
-	a.ShowPrices();
+	
+	PriceList PList;
+	PList.ShowPrices();
 	cout << "Введите Номер услуги: " << endl;
 	cin >> SerNum;
 	//ifstream in (".\\PriceList.txt"); //for .exe
@@ -138,24 +140,11 @@ void AddClientScreen::setClient()
 	cin >> day;
 	cin >> hour;
 	cin >> minute;
-	
-	//debug
-	/*
-	cout << ClFirstName << endl;
-	cout << ClSecondName << endl;
-	cout << CBrand << endl;
-	cout << CModel << endl;
-	cout << SerNum << endl;  
-	cout << SerName << endl; 
-	cout << SerPrice << endl;
-	cout << year << month << day << hour << minute << endl;
-	*/
-	
+		
 	ClientRecord* ptrClientRecord = new ClientRecord(ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
-	ptrTimeTable->InsertClient(ptrClientRecord);
-	
-
+	ptrTimeTable->InsertClient(ptrClientRecord);	
 }
+
 void PriceList::ShowPrices()
 {
 	//ifstream in (".\\PriceList.txt"); //for .exe
@@ -285,7 +274,7 @@ void ExpensesTable::ShowExpensesTable()
 
 AddExpensesScreen::AddExpensesScreen(ExpensesTable* ExpTab) : ptrExpensesTable(ExpTab)
 {
-	/*пусто*/
+
 }
 
 void AddExpensesScreen::setExpenses()
@@ -307,12 +296,133 @@ EditDeleteScreen::~EditDeleteScreen()
 
 }
 
-
-
-void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm, TimeTable* ptrTimeTable)
+void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm)
 {
+	bool search = true;
+	int choice;
 	if (ptrTimeTable->ptrClientRecord.empty()) // если список жильцов пуст
 		cout << "Нет записей" << endl; // выводим запись, что он пуст)
+	else
+	{
+		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
+		while (search == true && ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end())
+		{
+			if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour() && mm == (*ptrTimeTable->iter)->getMinute())
+			{
+				search = false;
+			}
+			else
+			{
+				*ptrTimeTable->iter++;
+			}
+		}
+		ClFirstName = (*ptrTimeTable->iter)->getClientFirstName();
+		ClSecondName = (*ptrTimeTable->iter)->getClientSecondName();
+		CBrand = (*ptrTimeTable->iter)->getCarBrand();
+		CModel = (*ptrTimeTable->iter)->getCarModel();
+		SerName = (*ptrTimeTable->iter)->getServiceName();
+		year = (*ptrTimeTable->iter)->getYear();
+		month = (*ptrTimeTable->iter)->getMonth();
+		day = (*ptrTimeTable->iter)->getDay();
+		hour = (*ptrTimeTable->iter)->getHour();
+		minute = (*ptrTimeTable->iter)->getMinute();
+		delete* ptrTimeTable->iter;
+		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.erase(ptrTimeTable->iter);
+		while (true)
+		{
+			cout << "Выберите данные для изменения:" << endl;
+			cout << "1. Имя:" << ClFirstName << endl;
+			cout << "2. Фамилия:" << ClSecondName << endl;
+			cout << "3. Марка машины:" << CBrand << endl;
+			cout << "4. Модель машины:" << CModel << endl;
+			cout << "5. Услуга:" << SerName << endl;
+			cout << "6. Дата исполнения услуги:" << year << "-" << month << "-" << day << " " << hour << ":" << minute << endl;
+			cout << "7. Сохранить и выйти" << endl;
+			cout << "Введите цифру нужного пункта:" << endl;
+			cin >> choice;
+			system("cls");
+			switch (choice)
+			{
+			case 1:
+			{
+				cout << "Введите Имя:" << endl;
+				cin >> ClFirstName;
+				break;
+			}
+			case 2:
+			{
+				cout << "Введите Фамилию:" << endl;
+				cin >> ClSecondName;
+				break;
+			}
+			case 3:
+			{
+				cout << "Введите марку машины:" << endl;
+				cin >> CBrand;
+				break;
+			}
+			case 4:
+			{
+				cout << "Введите модель машины:" << endl;
+				cin >> CModel;
+				break;
+			}
+			case 5:
+			{
+				PriceList PList;
+				PList.ShowPrices();
+				cout << "Введите Номер услуги: " << endl;
+				cin >> SerNum;
+				//ifstream in (".\\PriceList.txt"); //for .exe
+				ifstream in("../PriceList.txt");
+
+				if (in.is_open())
+				{
+					while (getline(in, line))
+					{
+						if (line.find(to_string(SerNum)) != string::npos) {
+							SerName = line.substr(3, 13);
+							SerPrice = stof(line.substr(16, 4));
+						}
+					}
+				}
+				in.close();
+				break;
+			}
+			case 6:
+			{
+				cout << "Введите дату выполнения услуги(YYYY MM DD hh mm):" << endl;
+				cin >> year;
+				cin >> month;
+				cin >> day;
+				cin >> hour;
+				cin >> minute;
+				break;
+			}
+			case 7:
+			{
+				ClientRecord* ptrClientRecord = new ClientRecord(ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
+				ptrTimeTable->InsertClient(ptrClientRecord);
+				cout << "Данные успешно изменены" << endl;
+				return;
+				break;
+			}
+			default:
+			{
+				cout << "Нет такого пункта" << endl;
+				system("pause");
+				break;
+			}
+			}
+			system("cls");
+		}
+	}
+}
+
+void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm)
+{
+	if (ptrTimeTable->ptrClientRecord.empty()) 
+		cout << "Нет записей" << endl;
 	else
 	{
 		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
@@ -320,7 +430,6 @@ void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned
 		{
 			if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour() && mm == (*ptrTimeTable->iter)->getMinute())
 			{
-				//деструктор
 				delete *ptrTimeTable->iter;
 				ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.erase(ptrTimeTable->iter);
 				cout << "Запись успешно удалена" << endl;
@@ -335,7 +444,6 @@ void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned
 
 void EditDeleteScreen::getRecordDate()
 {
-	//ptrTimeTable->ShowTimeTable();
 	cout << "Введите дату записи, которую хотите редактировать(YYYY MM DD hh mm):" << endl;
 	cin >> year;
 	cin >> month;
@@ -344,26 +452,29 @@ void EditDeleteScreen::getRecordDate()
 	cin >> minute;
 	cout << "Изменить - 1\nУдалить - 2\nВыбор:" << endl;
 	cin >> choice;
+	system("cls");
 	switch (choice)
 	{
 	case 1:
 	{
-		//ptrEditClientScreen = new EditClientScreen();
-		//ptrEditClientScreen->EditInfo();
-		//delete ptrEditClientScreen;
-		cout << "1" << endl;
+		
+		ptrEditClientScreen = new EditClientScreen(ptrTimeTable);
+		ptrEditClientScreen->EditInfo(year, month, day, hour, minute);
+		delete ptrEditClientScreen;
+		system("Pause");
+		break;
 	}
 	case 2:
 	{
-		ptrDeleteClientScreen = new DeleteClientScreen();
-		ptrDeleteClientScreen->DeleteClient(year, month, day, hour, minute, ptrTimeTable);
+		ptrDeleteClientScreen = new DeleteClientScreen(ptrTimeTable);
+		ptrDeleteClientScreen->DeleteClient(year, month, day, hour, minute);
 		delete ptrDeleteClientScreen;
 		system("Pause");
 		break;
 	}
 	default:
-		cout << "3" << endl;
+		cout << "Нет такого пункта" << endl;
+		system("pause");
 		break;
 	}
 }
-

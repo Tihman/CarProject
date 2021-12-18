@@ -112,10 +112,16 @@ public:
 class EditClientScreen
 {
 private:
-	ClientRecord* ptrClientRecord;
 	TimeTable* ptrTimeTable;
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel, line;
+	unsigned int SerNum, year, month, day, hour, minute;
+	float SerPrice;
 public:
-	string EditInfo();
+	EditClientScreen(TimeTable* ptrTT) :ptrTimeTable(ptrTT)
+	{
+
+	}
+	void EditInfo(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm);
 	void insertEditedInfo();
 };
 
@@ -125,7 +131,11 @@ private:
 	TimeTable* ptrTimeTable;
 	unsigned int year, month, day, hour, minute;
 public:
-	void DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm, TimeTable* ptrTimeTable);
+	DeleteClientScreen(TimeTable* ptrTT) :ptrTimeTable(ptrTT)
+	{
+
+	}
+	void DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm);
 
 };
 
