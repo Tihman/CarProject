@@ -137,9 +137,12 @@ private:
 	DeleteClientScreen* ptrDeleteClientScreen;
 	unsigned int year, month, day, hour, minute, choice;
 public:
-	EditDeleteScreen();
+	EditDeleteScreen(TimeTable* ptrTT) :ptrTimeTable(ptrTT)
+	{
+
+	}
 	~EditDeleteScreen();
-	void getRecordDate(TimeTable* ptrTimeTable);
+	void getRecordDate();
 };
 
 class UserInterface

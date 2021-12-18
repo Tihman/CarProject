@@ -54,9 +54,9 @@ void UserInterface::Menu()
 		case '3':
 		{
 			cout << "Редактирование расписания" << endl;
-			ptrEditDeleteScreen = new EditDeleteScreen;
+			ptrEditDeleteScreen = new EditDeleteScreen(ptrTimeTable);
 			ptrTimeTable->ShowTimeTable();
-			ptrEditDeleteScreen->getRecordDate(ptrTimeTable);
+			ptrEditDeleteScreen->getRecordDate();
 			delete ptrEditDeleteScreen;
 			break;
 		}
@@ -302,15 +302,12 @@ void AddExpensesScreen::setExpenses()
 	ptrExpensesTable->insertExpenses(ptrExpenses);
 }
 
-EditDeleteScreen::EditDeleteScreen()
-{
-
-}
-
 EditDeleteScreen::~EditDeleteScreen()
 {
 
 }
+
+
 
 void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm, TimeTable* ptrTimeTable)
 {
@@ -336,7 +333,7 @@ void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned
 	}
 }
 
-void EditDeleteScreen::getRecordDate(TimeTable* ptrTimeTable)
+void EditDeleteScreen::getRecordDate()
 {
 	//ptrTimeTable->ShowTimeTable();
 	cout << "Введите дату записи, которую хотите редактировать(YYYY MM DD hh mm):" << endl;
