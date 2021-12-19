@@ -259,11 +259,114 @@ void TimeTable::ShowTimeTable()
 	else
 	{
 		iter = ptrClientRecord.begin();
+		while (iter != prev(ptrClientRecord.end()))
+		{
+			iter2 = next(iter);
+			while (iter2 != ptrClientRecord.end())
+			{
+				if ((*iter)->getYear() >= (*iter2)->getYear())
+				{
+					swap(*iter, *iter2);
+				}
+				*iter2++;
+			}
+			*iter++;
+		}
+		iter = ptrClientRecord.begin();
+		while (iter != prev(ptrClientRecord.end()))
+		{
+			iter2 = next(iter);
+			while (iter2 != ptrClientRecord.end())
+			{
+				if ((*iter)->getMonth() >= (*iter2)->getMonth() && (*iter)->getYear() == (*iter2)->getYear())
+				{
+					swap(*iter, *iter2);
+				}
+				*iter2++;
+			}
+			*iter++;
+		}
+		iter = ptrClientRecord.begin();
+		while (iter != prev(ptrClientRecord.end()))
+		{
+			iter2 = next(iter);
+			while (iter2 != ptrClientRecord.end())
+			{
+				if ((*iter)->getDay() >= (*iter2)->getDay() && (*iter)->getMonth() == (*iter2)->getMonth() && (*iter)->getYear() == (*iter2)->getYear())
+				{
+					swap(*iter, *iter2);
+				}
+				*iter2++;
+			}
+			*iter++;
+		}
+		iter = ptrClientRecord.begin();
+		while (iter != prev(ptrClientRecord.end()))
+		{
+			iter2 = next(iter);
+			while (iter2 != ptrClientRecord.end())
+			{
+				if ((*iter)->getHour() >= (*iter2)->getHour() && (*iter)->getDay() == (*iter2)->getDay() && (*iter)->getMonth() == (*iter2)->getMonth() && (*iter)->getYear() == (*iter2)->getYear())
+				{
+					swap(*iter, *iter2);
+				}
+				*iter2++;
+			}
+			*iter++;
+		}
+		iter = ptrClientRecord.begin();
+		while (iter != prev(ptrClientRecord.end()))
+		{
+			iter2 = next(iter);
+			while (iter2 != ptrClientRecord.end())
+			{
+				if ((*iter)->getMinute() >= (*iter2)->getMinute() && (*iter)->getHour() == (*iter2)->getHour() && (*iter)->getDay() == (*iter2)->getDay() && (*iter)->getMonth() == (*iter2)->getMonth() && (*iter)->getYear() == (*iter2)->getYear())
+				{
+					swap(*iter, *iter2);
+				}
+				*iter2++;
+			}
+			*iter++;
+		}
+		iter = ptrClientRecord.begin();
 		while (iter != ptrClientRecord.end()) 
 		{
 			cout << (*iter)->getClientFirstName() << " " << (*iter)->getClientSecondName() << " | | " << (*iter)->getCarBrand() << " " << (*iter)->getCarModel() << " | | "
-				<< (*iter)->getServiceName() << " | | " << (*iter)->getYear() << "-" << (*iter)->getMonth() << "-" << (*iter)->getDay() << " " << (*iter)->getHour() << ":"
-				<< (*iter)->getMinute() << " | | " << (*iter)->getServicePrice() << endl;
+				<< (*iter)->getServiceName() << " | | ";
+			cout << (*iter)->getYear() << "-";
+			if ((*iter)->getMonth()<10)
+			{
+				cout << "0" << (*iter)->getMonth() << "-";
+			}
+			else
+			{
+				cout << (*iter)->getMonth() << "-";
+			}
+			if ((*iter)->getDay() < 10)
+			{
+				cout << "0" << (*iter)->getDay() << "-";
+			}
+			else
+			{
+				cout << (*iter)->getDay() << "-";
+			}
+			if ((*iter)->getHour() < 10)
+			{
+				cout << "0" << (*iter)->getHour() << "-";
+			}
+			else
+			{
+				cout << (*iter)->getHour() << "-";
+			}
+			if ((*iter)->getMinute() < 10)
+			{
+				cout << "0" << (*iter)->getMinute() << "-";
+			}
+			else
+			{
+				cout << (*iter)->getMinute() << "-";
+			}
+			cout << (*iter)->getServicePrice() << endl;
 			*iter++;
 		}
 	}

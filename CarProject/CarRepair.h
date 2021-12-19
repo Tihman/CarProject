@@ -45,7 +45,7 @@ private:
 	unsigned int year, month, day, hour, minute;
 public:
 	list <ClientRecord*> ptrClientRecord;
-	list <ClientRecord*>::iterator iter;
+	list <ClientRecord*>::iterator iter,iter2;
 	void ShowTimeTable();
 	void InsertClient(ClientRecord*);
 	void SaveFile();
