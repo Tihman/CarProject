@@ -1,6 +1,7 @@
 #include <iostream>
 #include <string>
 #include <list>
+#include <vector>
 
 using namespace std;
 
@@ -19,11 +20,10 @@ class ClientRecord
 private:
 	string ClFirstName, ClSecondName, SerName, CBrand, CModel;
 	float SerPrice;
-	unsigned int RecordNum, year, month, day, hour, minute;
+	unsigned int year, month, day, hour, minute;
 public:
-	ClientRecord(unsigned int RN, string ClFN, string ClSN, string CB, string CM, string SN, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP);
+	ClientRecord(string ClFN, string ClSN, string CB, string CM, string SN, unsigned int yy, unsigned int mm, unsigned int dd, unsigned int hh, unsigned int mint, float SP);
 	~ClientRecord();
-	unsigned int getRecordNum();
 	string getClientFirstName();
 	string getClientSecondName();
 	string getCarBrand();
@@ -40,9 +40,9 @@ public:
 class TimeTable
 {
 private:
+public:
 	list <ClientRecord*> ptrClientRecord;
 	list <ClientRecord*>::iterator iter;
-public:
 	void ShowTimeTable();
 	void InsertClient(ClientRecord*);
 };
@@ -64,17 +64,107 @@ public:
 	void setClient();
 };
 
+class Expenses
+{
+public:
+	string Product;
+	unsigned int year, month, day;
+	float Cost;
+	Expenses(string P, unsigned int y, unsigned int m, unsigned int d, float ct) :
+		Product(P), year(y), month(m), day(d), Cost(ct)
+	{
+		/* */
+	}
+	/*
+	string getProduct();
+	unsigned int getYear();
+	unsigned int getMonth();
+	unsigned int getDay();
+	unsigned int getHour();
+	unsigned int getMinute();
+	float getCost();
+	*/
+};
+
+class ExpensesTable
+{
+private:
+	vector<Expenses*> vecptrExpenses;
+	vector<Expenses*>::iterator iter;
+public:
+	//~ExpensesTable();
+	void insertExpenses(Expenses*);
+	void ShowExpensesTable();
+};
+
+class AddExpensesScreen
+{
+private:
+	ExpensesTable* ptrExpensesTable;
+	string Product;
+	unsigned int year, month, day;
+	float Cost;
+public:
+	AddExpensesScreen(ExpensesTable*);
+	void setExpenses();
+};
+
+class EditClientScreen
+{
+private:
+	TimeTable* ptrTimeTable;
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel, line;
+	unsigned int SerNum, year, month, day, hour, minute;
+	float SerPrice;
+public:
+	EditClientScreen(TimeTable* ptrTT) :ptrTimeTable(ptrTT)
+	{
+
+	}
+	void EditInfo(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm);
+	void insertEditedInfo();
+};
+
+class DeleteClientScreen
+{
+private:
+	TimeTable* ptrTimeTable;
+	unsigned int year, month, day, hour, minute;
+public:
+	DeleteClientScreen(TimeTable* ptrTT) :ptrTimeTable(ptrTT)
+	{
+
+	}
+	void DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm);
+
+};
+
+class EditDeleteScreen
+{
+private:
+	TimeTable* ptrTimeTable;
+	EditClientScreen* ptrEditClientScreen;
+	DeleteClientScreen* ptrDeleteClientScreen;
+	unsigned int year, month, day, hour, minute, choice;
+public:
+	EditDeleteScreen(TimeTable* ptrTT) :ptrTimeTable(ptrTT)
+	{
+
+	}
+	~EditDeleteScreen();
+	void getRecordDate();
+};
+
 class UserInterface
 {
 private:
 	PriceList* ptrPriceList;
 	AddClientScreen* ptrAddClientScreen;
+	EditDeleteScreen* ptrEditDeleteScreen;
 	TimeTable* ptrTimeTable;
-	/*EditDeleteScreen ptrEditDeleteScreen;
-	
 	ExpensesTable* ptrExpensesTable;
 	AddExpensesScreen* ptrAddExpensesScreen;
-	Report* ptrReport; */
+	//Report* ptrReport; 
 	char choice;
 public:
 	UserInterface();
@@ -82,70 +172,12 @@ public:
 	void Menu();
 };
 
-
-
-
-
-
 /*
-class EditDeleteScreen
-{
-private:
-	TimeTable* ptrTimeTable;
-	EditClientScreen* ptrEditClientScreen;
-	DeleteClientScreen* ptrDeleteClientScreen;
-	unsigned int RecordNum;
-public:
-	unsigned int getRecordNum();
-};
 
-class EditClientScreen
-{
-private:
-	ClientRecord* ptrClientRecord;
-	TimeTable* ptrTimeTable;
-public:
-	string EditInfo();
-	void insertEditedInfo();
-};
 
-class DeleteClientScreen
-{
-private:
-	ClientRecord* ptrClientRecord;
-public:
-	void DeleteClient();
-};
-*/
 
-/*
-class ExpensesTable
-{
-private:
-	Expenses* ptrExpenses;
-public:
-	void ShowExpensesTable();
-};
 
-class Expenses
-{
-private:
-	string Product, DateTime;
-	float Cost;
-public:
-	string getProduct();
-	float getCost();
-	string getDateTime();
-};
 
-class AddExpensesScreen
-{
-private:
-	Expenses* ptrExpenses;
-public:
-	void setExpenses();
-	void insertExpenses();
-};
 class Report
 {
 private:
