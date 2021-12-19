@@ -9,6 +9,9 @@ UserInterface::UserInterface()
 {
 	ptrTimeTable = new TimeTable;
 	ptrExpensesTable = new ExpensesTable;
+	ptrTimeTable->LoadFile();
+	ptrExpensesTable->LoadExpenses();
+
 }
 
 UserInterface::~UserInterface()
@@ -45,9 +48,16 @@ void UserInterface::Menu()
 		}
 		case '2':
 		{
+			char ch;
 			cout << "Расписание" << endl;
 			cout << "НомерЗаписи\tИмяКлиента\tУслуга\tСтоимостьУслуги\tВремяЗаписи" << endl;
 			ptrTimeTable->ShowTimeTable();
+			cout << "Хотите сохранить данные? (y/n)" << endl;
+			cin >> ch;
+			if (ch == 'y')
+			{
+				ptrTimeTable->SaveFile();
+			}
 			system("pause");
 			break;
 		}
@@ -79,8 +89,15 @@ void UserInterface::Menu()
 		}
 		case '6':
 		{
+			char ch;
 			cout << "Таблица расходов" << endl;
 			ptrExpensesTable->ShowExpensesTable();
+			cout << "Хотите сохранить данные? (y/n)" << endl;
+			cin >> ch;
+			if (ch == 'y')
+			{
+				ptrExpensesTable->SaveExpenses();
+			}
 			system("pause");
 			break;
 		}
@@ -91,7 +108,15 @@ void UserInterface::Menu()
 		}
 		case '8':
 		{
+			char ch;
 			cout << "Пока" << endl;
+			cout << "Хотите сохранить данные? (y/n)" << endl;
+			cin >> ch;
+			if (ch == 'y')
+			{
+				ptrTimeTable->SaveFile();
+				ptrExpensesTable->SaveExpenses();
+			}
 			return;
 			break;
 		}
@@ -156,7 +181,7 @@ void PriceList::ShowPrices()
 			cout << ServiceName << endl;
 		}
 	}
-	in.close();     // закрываем файл
+	in.close();     
 }
 
 ClientRecord::ClientRecord(string ClFN, string ClSN, string CB, string CM, string SN,
@@ -167,7 +192,7 @@ ClientRecord::ClientRecord(string ClFN, string ClSN, string CB, string CM, strin
 
 }
 
-ClientRecord::~ClientRecord() //деструктор
+ClientRecord::~ClientRecord() 
 {
 
 }
@@ -229,13 +254,12 @@ float ClientRecord::getServicePrice()
 
 void TimeTable::ShowTimeTable()
 {
-	//cout << "\nApt#\tИмя жильца\n-------------------\n";
-	if (ptrClientRecord.empty()) // если список жильцов пуст
-		cout << "Нет жильцов\n" << endl; // выводим запись, что он пуст)
+	if (ptrClientRecord.empty()) 
+		cout << "Нет жильцов\n" << endl; 
 	else
 	{
 		iter = ptrClientRecord.begin();
-		while (iter != ptrClientRecord.end()) // распечатываем всех жильцов
+		while (iter != ptrClientRecord.end()) 
 		{
 			cout << (*iter)->getClientFirstName() << " " << (*iter)->getClientSecondName() << " | | " << (*iter)->getCarBrand() << " " << (*iter)->getCarModel() << " | | "
 				<< (*iter)->getServiceName() << " | | " << (*iter)->getYear() << "-" << (*iter)->getMonth() << "-" << (*iter)->getDay() << " " << (*iter)->getHour() << ":"
@@ -244,6 +268,122 @@ void TimeTable::ShowTimeTable()
 		}
 	}
 }
+void TimeTable::SaveFile()
+{
+	ofstream out; 
+	// (".\\PriceList.txt"); //for .exe
+	out.open("../TimeTable.txt"); 
+	if (out.is_open())
+	{
+		if (ptrClientRecord.empty()) 
+			cout << "Нет жильцов\n" << endl; 
+		else
+		{
+			iter = ptrClientRecord.begin();
+			while (iter != ptrClientRecord.end()) 
+			{
+				out << (*iter)->getClientFirstName() << ";" << (*iter)->getClientSecondName() << ";" << (*iter)->getCarBrand() << ";" << (*iter)->getCarModel() << ";"
+					<< (*iter)->getServiceName() << ";" << (*iter)->getYear() << ";" << (*iter)->getMonth() << ";" << (*iter)->getDay() << ";" << (*iter)->getHour() << ";"
+					<< (*iter)->getMinute() << ";" << (*iter)->getServicePrice() << ";" << endl;
+				*iter++;
+			}
+		}
+	}
+
+}
+
+void TimeTable::LoadFile()
+{
+	string line;
+	// (".\\PriceList.txt"); //for .exe
+	ifstream in("../TimeTable.txt"); 
+	if (in.is_open())
+	{
+		while (getline(in, line))
+		{
+			string s1[11];
+			int j = 0;
+			for (int i = 0; i <= 10; i++)
+			{
+				while (line[j] != ';')
+				{
+					s1[i] = s1[i] + line[j];
+					j++;
+				}
+				j++;
+			}
+			ClFirstName = s1[0];
+			ClSecondName = s1[1];
+			CBrand = s1[2];
+			CModel = s1[3];
+			SerName = s1[4];
+			year = atoi(s1[5].c_str());
+			month = atoi(s1[6].c_str());
+			day = atoi(s1[7].c_str());
+			hour = atoi(s1[8].c_str());
+			minute = atoi(s1[9].c_str());
+			SerPrice = stof(s1[10]);
+			ClientRecord* ptrClientRecord = new ClientRecord(ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
+			InsertClient(ptrClientRecord);
+		}
+	}
+	in.close();     
+}
+
+void ExpensesTable::LoadExpenses()
+{
+	string line;
+	// (".\\PriceList.txt"); //for .exe
+	ifstream in("../ExpensesTable.txt");
+	if (in.is_open())
+	{
+		while (getline(in, line))
+		{
+			string s1[5];
+			int j = 0;
+			for (int i = 0; i <= 4; i++)
+			{
+				while (line[j] != ';')
+				{
+					s1[i] = s1[i] + line[j];
+					j++;
+				}
+				j++;
+			}
+			Product = s1[0];
+			year = atoi(s1[1].c_str());
+			month = atoi(s1[2].c_str());
+			day = atoi(s1[3].c_str());
+			Cost = stof(s1[4]);
+			Expenses* ptrExpenses = new Expenses(Product, year, month, day, Cost);
+			insertExpenses(ptrExpenses);
+		}
+	}
+	in.close();
+}
+
+void ExpensesTable::SaveExpenses()
+{
+	ofstream out;
+	// (".\\PriceList.txt"); //for .exe
+	out.open("../ExpensesTable.txt");
+	if (out.is_open())
+	{
+		if (vecptrExpenses.empty())
+			cout << "Нет расходов\n" << endl;
+		else
+		{
+			iter = vecptrExpenses.begin();
+			while (iter != vecptrExpenses.end())
+			{
+				out << (*iter)->Product << ";" << (*iter)->year << ";" << (*iter)->month << ";" << (*iter)->day << ";"<< (*iter)->Cost << ";" << endl;
+				*iter++;
+			}
+		}
+	}
+}
+
+
 
 void TimeTable::InsertClient(ClientRecord* ptrCR)
 {
@@ -257,7 +397,6 @@ void ExpensesTable::insertExpenses(Expenses* ptrExp)
 
 void ExpensesTable::ShowExpensesTable()
 {
-	//cout << "\nДата\tПолучатель\tСумма\tКатегория\n" << "----------------------------------------\n" << endl;
 	if (vecptrExpenses.size() == 0) 
 		cout << "Расходов нет\n" << endl;
 	else
@@ -300,8 +439,8 @@ void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int D
 {
 	bool search = true;
 	int choice;
-	if (ptrTimeTable->ptrClientRecord.empty()) // если список жильцов пуст
-		cout << "Нет записей" << endl; // выводим запись, что он пуст)
+	if (ptrTimeTable->ptrClientRecord.empty()) 
+		cout << "Нет записей" << endl; 
 	else
 	{
 		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
@@ -326,6 +465,7 @@ void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int D
 		day = (*ptrTimeTable->iter)->getDay();
 		hour = (*ptrTimeTable->iter)->getHour();
 		minute = (*ptrTimeTable->iter)->getMinute();
+		SerPrice = (*ptrTimeTable->iter)->getServicePrice();
 		delete* ptrTimeTable->iter;
 		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.erase(ptrTimeTable->iter);
 		while (true)

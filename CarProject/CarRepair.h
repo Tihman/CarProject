@@ -40,11 +40,16 @@ public:
 class TimeTable
 {
 private:
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel;
+	float SerPrice;
+	unsigned int year, month, day, hour, minute;
 public:
 	list <ClientRecord*> ptrClientRecord;
 	list <ClientRecord*>::iterator iter;
 	void ShowTimeTable();
 	void InsertClient(ClientRecord*);
+	void SaveFile();
+	void LoadFile();
 };
 
 class AddClientScreen
@@ -89,12 +94,17 @@ public:
 class ExpensesTable
 {
 private:
+	string Product;
+	unsigned int year, month, day;
+	float Cost;
 	vector<Expenses*> vecptrExpenses;
 	vector<Expenses*>::iterator iter;
 public:
 	//~ExpensesTable();
 	void insertExpenses(Expenses*);
 	void ShowExpensesTable();
+	void LoadExpenses();
+	void SaveExpenses();
 };
 
 class AddExpensesScreen
