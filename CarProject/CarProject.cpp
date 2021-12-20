@@ -104,6 +104,10 @@ void UserInterface::Menu()
 		case '7':
 		{
 			cout << "Отчет за период" << endl;
+			ptrReport = new Report(ptrTimeTable, ptrExpensesTable);
+			ptrReport->ShowReport();
+			delete ptrReport;
+			system("Pause");
 			break;
 		}
 		case '8':
@@ -160,11 +164,38 @@ void AddClientScreen::setClient()
 	in.close();
 
 	cout << "Введите дату выполнения услуги(YYYY MM DD hh mm):" << endl;
-	cin >> year;
-	cin >> month;
-	cin >> day;
-	cin >> hour;
-	cin >> minute;
+	bool search = true;
+	bool write;
+	while (search)
+	{
+		cin >> year;
+		cin >> month;
+		cin >> day;
+		cin >> hour;
+		cin >> minute;
+		write = true;
+		if (ptrTimeTable->ptrClientRecord.empty())
+			//запись даты, так как нет записей
+			search = false;
+		else
+		{
+			ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
+			while (ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end() && write)
+			{
+				if (year == (*ptrTimeTable->iter)->getYear() && month == (*ptrTimeTable->iter)->getMonth() && day == (*ptrTimeTable->iter)->getDay() && hour == (*ptrTimeTable->iter)->getHour(), minute == (*ptrTimeTable->iter)->getMinute())
+				{
+					cout << "Запись на эту дату уже существует." << endl;
+					write = false;
+				}
+				*ptrTimeTable->iter++;
+			}
+			if (write)
+			{
+				//запись даты, так как нет совпадений
+				search = false;
+			}
+		}
+	}
 		
 	ClientRecord* ptrClientRecord = new ClientRecord(ClFirstName, ClSecondName, CBrand, CModel, SerName, year, month, day, hour, minute, SerPrice);
 	ptrTimeTable->InsertClient(ptrClientRecord);	
@@ -635,11 +666,38 @@ void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int D
 			case 6:
 			{
 				cout << "Введите дату выполнения услуги(YYYY MM DD hh mm):" << endl;
-				cin >> year;
-				cin >> month;
-				cin >> day;
-				cin >> hour;
-				cin >> minute;
+				bool search = true;
+				bool write;
+				while (search)
+				{
+					cin >> YY;
+					cin >> MM;
+					cin >> DD;
+					cin >> hh;
+					cin >> mm;
+					write = true;
+					if (ptrTimeTable->ptrClientRecord.empty())
+						//запись даты, так как нет записей
+						search = false;
+					else
+					{
+						ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
+						while (ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end() && write)
+						{
+							if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour(), mm == (*ptrTimeTable->iter)->getMinute())
+							{
+								cout << "Запись на эту дату уже существует." << endl;
+								write = false;
+							}
+							*ptrTimeTable->iter++;
+						}
+						if (write)
+						{
+							//запись даты, так как нет совпадений
+							search = false;
+						}
+					}
+				}
 				break;
 			}
 			case 7:
@@ -720,4 +778,102 @@ void EditDeleteScreen::getRecordDate()
 		system("pause");
 		break;
 	}
+}
+
+void Report::ShowReport()
+{
+	cout << "Введите начальную дату" << endl;
+	cin >> year1;
+	cin >> month1;
+	cin >> day1;
+	cout << "Введите конечную дату" << endl;
+	cin >> year2;
+	cin >> month2;
+	cin >> day2;
+
+    Revenue = 0;
+
+		ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
+		while (ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end())
+		{
+			if (year1 == (*ptrTimeTable->iter)->getYear())
+			{
+				if (month1 == (*ptrTimeTable->iter)->getMonth())
+				{
+					if (day1 <= (*ptrTimeTable->iter)->getDay())
+					{
+						Revenue += (*ptrTimeTable->iter)->getServicePrice();
+					}
+				}
+				else if (month1 < (*ptrTimeTable->iter)->getMonth())
+				{
+					Revenue += (*ptrTimeTable->iter)->getServicePrice();
+				}
+			}
+			else if (year1 < (*ptrTimeTable->iter)->getYear() && year2 >(*ptrTimeTable->iter)->getYear())
+			{
+				Revenue += (*ptrTimeTable->iter)->getServicePrice();
+			}
+			else if (year2 == (*ptrTimeTable->iter)->getYear())
+			{
+				if (month2 == (*ptrTimeTable->iter)->getMonth())
+				{
+					if (day2 >= (*ptrTimeTable->iter)->getDay())
+					{
+						Revenue += (*ptrTimeTable->iter)->getServicePrice();
+					}
+				}
+				else if (month2 > (*ptrTimeTable->iter)->getMonth())
+				{
+					Revenue += (*ptrTimeTable->iter)->getServicePrice();
+				}
+			}
+			*ptrTimeTable->iter++;
+		}
+
+	Expenses = 0;
+
+		ptrExpensesTable->iter = ptrExpensesTable->vecptrExpenses.begin();
+		while (ptrExpensesTable->iter != ptrExpensesTable->vecptrExpenses.end())
+		{
+			if (year1 == (*ptrExpensesTable->iter)->year)
+			{
+				if (month1 == (*ptrExpensesTable->iter)->month)
+				{
+					if (day1 <= (*ptrExpensesTable->iter)->day)
+					{
+						Expenses += (*ptrExpensesTable->iter)->Cost;
+					}
+				}
+				else if (month1 < (*ptrExpensesTable->iter)->month)
+				{
+					Expenses += (*ptrExpensesTable->iter)->Cost;
+				}
+			}
+			else if (year1 < (*ptrExpensesTable->iter)->year && year2 >(*ptrExpensesTable->iter)->year)
+			{
+				Expenses += (*ptrExpensesTable->iter)->Cost;
+			}
+			else if (year2 == (*ptrExpensesTable->iter)->year)
+			{
+				if (month2 == (*ptrExpensesTable->iter)->month)
+				{
+					if (day2 >= (*ptrExpensesTable->iter)->day)
+					{
+						Expenses += (*ptrExpensesTable->iter)->Cost;
+					}
+				}
+				else if (month2 > (*ptrExpensesTable->iter)->month)
+				{
+					Expenses += (*ptrExpensesTable->iter)->Cost;
+				}
+			}
+			*ptrExpensesTable->iter++;
+		}
+
+	Profit = Revenue - Expenses;
+
+	cout << "Доходы за указанный период" << Revenue << endl;
+	cout << "Расходы за указанный период" << Expenses << endl;
+	cout << "Выручка за указанный период" << Profit << endl;
 }
