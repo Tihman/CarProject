@@ -8,7 +8,7 @@ using namespace std;
 class PriceList
 {
 private:
-	string ServiceName;
+	string ServiceName, line;
 	float ServicePrice;
 	unsigned int RecordNum;
 public:
@@ -64,7 +64,7 @@ private:
 public:
 	AddClientScreen(TimeTable* ptrTT) : ptrTimeTable(ptrTT)
 	{
-		/* тут пусто */
+		/*  */
 	}
 	void setClient();
 };
@@ -80,15 +80,6 @@ public:
 	{
 		/* */
 	}
-	/*
-	string getProduct();
-	unsigned int getYear();
-	unsigned int getMonth();
-	unsigned int getDay();
-	unsigned int getHour();
-	unsigned int getMinute();
-	float getCost();
-	*/
 };
 
 class ExpensesTable
@@ -98,7 +89,6 @@ private:
 	unsigned int year, month, day;
 	float Cost;
 public:
-	//~ExpensesTable();
 	vector<Expenses*> vecptrExpenses;
 	vector<Expenses*>::iterator iter;
 	void insertExpenses(Expenses*);
@@ -132,7 +122,6 @@ public:
 
 	}
 	void EditInfo(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm);
-	void insertEditedInfo();
 };
 
 class DeleteClientScreen
