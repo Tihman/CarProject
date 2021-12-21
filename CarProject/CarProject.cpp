@@ -1,5 +1,6 @@
 ﻿#include <stdio.h>
 #include <iostream>
+#include <iomanip>
 #include <fstream>
 #include "CarRepair.h"
 
@@ -50,7 +51,7 @@ void UserInterface::Menu()
 		{
 			char ch;
 			cout << "Расписание" << endl;
-			cout << "НомерЗаписи\tИмяКлиента\tУслуга\tСтоимостьУслуги\tВремяЗаписи" << endl;
+			cout << "ИмяКлиента" << "| |"<< "ФамилияКлиента" << "| |"<< "МаркаМашины" << "| |" <<"МодельМашины" << "| |" << "НазваниеУслуги"  << "| |" << left << setw(20) << "ВремяЗаписи" << "| |" << "СтоимостьУслуги" << endl;
 			ptrTimeTable->ShowTimeTable();
 			cout << "Хотите сохранить данные? (y/n)" << endl;
 			cin >> ch;
@@ -73,6 +74,7 @@ void UserInterface::Menu()
 		case '4':
 		{
 			cout << "Прайс-лист" << endl;
+			cout << "НомерУслуги" << "| |" << left << setw(20) << "НазваниеУслуги" << "| |" << "СтоимостьУслуги" << endl;
 			PriceList a;
 			a.ShowPrices();
 			system("pause");
@@ -91,6 +93,7 @@ void UserInterface::Menu()
 		{
 			char ch;
 			cout << "Таблица расходов" << endl;
+			cout << left << setw(10) << "Расход" << "| | " << "ДатаРасхода" << "| | " << "СуммаРасхода" << endl;
 			ptrExpensesTable->ShowExpensesTable();
 			cout << "Хотите сохранить данные? (y/n)" << endl;
 			cin >> ch;
@@ -113,7 +116,7 @@ void UserInterface::Menu()
 		case '8':
 		{
 			char ch;
-			cout << "Пока" << endl;
+			cout << "До свидания" << endl;
 			cout << "Хотите сохранить данные? (y/n)" << endl;
 			cin >> ch;
 			if (ch == 'y')
@@ -155,9 +158,22 @@ void AddClientScreen::setClient()
 	{
 		while (getline(in, line))
 		{
-			if (line.find(to_string(SerNum)) != string::npos) {
-				SerName = line.substr(3, 13);
-				SerPrice= stof(line.substr(16, 4));
+
+			if (line.find(to_string(SerNum)) != string::npos)
+			{
+				string s1[3];
+				int j = 0;
+				for (int i = 0; i <= 2; i++)
+				{
+					while (line[j] != ';')
+					{
+						s1[i] = s1[i] + line[j];
+						j++;
+					}
+					j++;
+				}
+				SerName = s1[1];
+				SerPrice = stof(s1[2]);
 			}
 		}
 	}
@@ -182,7 +198,7 @@ void AddClientScreen::setClient()
 			ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
 			while (ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end() && write)
 			{
-				if (year == (*ptrTimeTable->iter)->getYear() && month == (*ptrTimeTable->iter)->getMonth() && day == (*ptrTimeTable->iter)->getDay() && hour == (*ptrTimeTable->iter)->getHour(), minute == (*ptrTimeTable->iter)->getMinute())
+				if (year == (*ptrTimeTable->iter)->getYear() && month == (*ptrTimeTable->iter)->getMonth() && day == (*ptrTimeTable->iter)->getDay() && hour == (*ptrTimeTable->iter)->getHour() && minute == (*ptrTimeTable->iter)->getMinute())
 				{
 					cout << "Запись на эту дату уже существует." << endl;
 					write = false;
@@ -207,10 +223,25 @@ void PriceList::ShowPrices()
 	ifstream in ("../PriceList.txt");
 	if (in.is_open())
 	{
-		while (getline(in, ServiceName))
+		while (getline(in, line))
 		{
-			cout << ServiceName << endl;
+			string s1[3];
+			int j = 0;
+			for (int i = 0; i <= 2; i++)
+			{
+				while (line[j] != ';')
+				{
+					s1[i] = s1[i] + line[j];
+					j++;
+				}
+				j++;
+			}
+			RecordNum = atoi(s1[0].c_str());
+			ServiceName = s1[1];
+			ServicePrice = stof(s1[2]);
+			cout << left << setw(10) << RecordNum << " | | " << setw(18) << ServiceName << " | | " << ServicePrice << endl;
 		}
+		
 	}
 	in.close();     
 }
@@ -286,7 +317,7 @@ float ClientRecord::getServicePrice()
 void TimeTable::ShowTimeTable()
 {
 	if (ptrClientRecord.empty()) 
-		cout << "Нет жильцов\n" << endl; 
+		cout << "Нет записей\n" << endl; 
 	else
 	{
 		iter = ptrClientRecord.begin();
@@ -362,42 +393,41 @@ void TimeTable::ShowTimeTable()
 		iter = ptrClientRecord.begin();
 		while (iter != ptrClientRecord.end()) 
 		{
-			cout << (*iter)->getClientFirstName() << " " << (*iter)->getClientSecondName() << " | | " << (*iter)->getCarBrand() << " " << (*iter)->getCarModel() << " | | "
-				<< (*iter)->getServiceName() << " | | ";
-			cout << (*iter)->getYear() << "-";
+			cout << left << setw(10) << (*iter)->getClientFirstName() << "| |" << setw(14) << (*iter)->getClientSecondName() << "| |" << setw(11) << (*iter)->getCarBrand() << "| |" <<  setw(12) <<(*iter)->getCarModel() << "| |" <<  setw(14) << (*iter)->getServiceName() << "| |";
+			cout << left <<  setw(1) <<(*iter)->getYear() << "-";
 			if ((*iter)->getMonth()<10)
 			{
-				cout << "0" << (*iter)->getMonth() << "-";
+				cout << left << "0" << setw(1) << (*iter)->getMonth() << "-";
 			}
 			else
 			{
-				cout << (*iter)->getMonth() << "-";
+				cout << left << setw(1) <<  (*iter)->getMonth() <<"-";
 			}
 			if ((*iter)->getDay() < 10)
 			{
-				cout << "0" << (*iter)->getDay() << "-";
+				cout << left << "0" << setw(1) << (*iter)->getDay() <<" ";
 			}
 			else
 			{
-				cout << (*iter)->getDay() << "-";
+				cout << left << setw(1) << (*iter)->getDay() <<" ";
 			}
 			if ((*iter)->getHour() < 10)
 			{
-				cout << "0" << (*iter)->getHour() << "-";
+				cout << left << "0" << setw(1) << (*iter)->getHour() <<":";
 			}
 			else
 			{
-				cout << (*iter)->getHour() << "-";
+				cout << left << setw(1) << (*iter)->getHour() << ":";
 			}
 			if ((*iter)->getMinute() < 10)
 			{
-				cout << "0" << (*iter)->getMinute() << "-";
+				cout << left << "0" << setw(5) << (*iter)->getMinute() << "| |";
 			}
 			else
 			{
-				cout << (*iter)->getMinute() << "-";
+				cout << left << setw(6) <<  (*iter)->getMinute() << "| |";
 			}
-			cout << (*iter)->getServicePrice() << endl;
+			cout << left << (*iter)->getServicePrice() << endl;
 			*iter++;
 		}
 	}
@@ -410,7 +440,7 @@ void TimeTable::SaveFile()
 	if (out.is_open())
 	{
 		if (ptrClientRecord.empty()) 
-			cout << "Нет жильцов\n" << endl; 
+			cout << "Нет записей\n" << endl; 
 		else
 		{
 			iter = ptrClientRecord.begin();
@@ -538,7 +568,7 @@ void ExpensesTable::ShowExpensesTable()
 		iter = vecptrExpenses.begin();
 		while (iter != vecptrExpenses.end())
 		{ 
-			cout << (*iter)->Product << " | | " << (*iter)->year << "-" << (*iter)->month << "-" << (*iter)->day << " | | " << (*iter)->Cost << endl;
+			cout << left << setw(9) << (*iter)->Product << " | | " << (*iter)->year << "-" << (*iter)->month << "-" << (*iter)->day << " | | " << (*iter)->Cost << endl;
 			iter++;
 		}
 		cout << endl;
@@ -684,7 +714,7 @@ void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int D
 						ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.begin();
 						while (ptrTimeTable->iter != ptrTimeTable->ptrClientRecord.end() && write)
 						{
-							if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour(), mm == (*ptrTimeTable->iter)->getMinute())
+							if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour() && mm == (*ptrTimeTable->iter)->getMinute())
 							{
 								cout << "Запись на эту дату уже существует." << endl;
 								write = false;
@@ -722,6 +752,7 @@ void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int D
 
 void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned int DD, unsigned int hh, unsigned int mm)
 {
+	char conf;
 	if (ptrTimeTable->ptrClientRecord.empty()) 
 		cout << "Нет записей" << endl;
 	else
@@ -731,14 +762,16 @@ void DeleteClientScreen::DeleteClient(unsigned int YY, unsigned int MM, unsigned
 		{
 			if (YY == (*ptrTimeTable->iter)->getYear() && MM == (*ptrTimeTable->iter)->getMonth() && DD == (*ptrTimeTable->iter)->getDay() && hh == (*ptrTimeTable->iter)->getHour() && mm == (*ptrTimeTable->iter)->getMinute())
 			{
-				delete *ptrTimeTable->iter;
-				ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.erase(ptrTimeTable->iter);
-				cout << "Запись успешно удалена" << endl;
+				cout << "Уверены ли вы в удалении данной записи?(y/n)" << endl;
+				cin >> conf;
+				if (conf=='y')
+				{
+					delete* ptrTimeTable->iter;
+					ptrTimeTable->iter = ptrTimeTable->ptrClientRecord.erase(ptrTimeTable->iter);
+					cout << "Запись успешно удалена" << endl;
+				}
 			}
-			else
-			{
-				*ptrTimeTable->iter++;
-			}
+			*ptrTimeTable->iter++;
 		}
 	}
 }
@@ -782,11 +815,11 @@ void EditDeleteScreen::getRecordDate()
 
 void Report::ShowReport()
 {
-	cout << "Введите начальную дату" << endl;
+	cout << "Введите начальную дату (YYYY MM DD): " << endl;
 	cin >> year1;
 	cin >> month1;
 	cin >> day1;
-	cout << "Введите конечную дату" << endl;
+	cout << "Введите конечную дату (YYYY MM DD): " << endl;
 	cin >> year2;
 	cin >> month2;
 	cin >> day2;
@@ -873,7 +906,7 @@ void Report::ShowReport()
 
 	Profit = Revenue - Expenses;
 
-	cout << "Доходы за указанный период" << Revenue << endl;
-	cout << "Расходы за указанный период" << Expenses << endl;
-	cout << "Выручка за указанный период" << Profit << endl;
+	cout << "Доходы за указанный период: " << Revenue << endl;
+	cout << "Расходы за указанный период: " << Expenses << endl;
+	cout << "Выручка за указанный период: " << Profit << endl;
 }
