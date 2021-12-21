@@ -40,11 +40,16 @@ public:
 class TimeTable
 {
 private:
+	string ClFirstName, ClSecondName, SerName, CBrand, CModel;
+	float SerPrice;
+	unsigned int year, month, day, hour, minute;
 public:
 	list <ClientRecord*> ptrClientRecord;
-	list <ClientRecord*>::iterator iter;
+	list <ClientRecord*>::iterator iter,iter2;
 	void ShowTimeTable();
 	void InsertClient(ClientRecord*);
+	void SaveFile();
+	void LoadFile();
 };
 
 class AddClientScreen
@@ -89,12 +94,17 @@ public:
 class ExpensesTable
 {
 private:
-	vector<Expenses*> vecptrExpenses;
-	vector<Expenses*>::iterator iter;
+	string Product;
+	unsigned int year, month, day;
+	float Cost;
 public:
 	//~ExpensesTable();
+	vector<Expenses*> vecptrExpenses;
+	vector<Expenses*>::iterator iter;
 	void insertExpenses(Expenses*);
 	void ShowExpensesTable();
+	void LoadExpenses();
+	void SaveExpenses();
 };
 
 class AddExpensesScreen
@@ -155,6 +165,21 @@ public:
 	void getRecordDate();
 };
 
+class Report
+{
+private:
+	unsigned int year1, month1, day1, year2, month2, day2;
+	float Revenue, Expenses, Profit;
+	TimeTable* ptrTimeTable;
+	ExpensesTable* ptrExpensesTable;
+public:
+	Report(TimeTable* ptrTT, ExpensesTable* ptrET): ptrTimeTable(ptrTT), ptrExpensesTable(ptrET)
+	{
+
+	}
+	void ShowReport();
+}; 
+
 class UserInterface
 {
 private:
@@ -164,25 +189,10 @@ private:
 	TimeTable* ptrTimeTable;
 	ExpensesTable* ptrExpensesTable;
 	AddExpensesScreen* ptrAddExpensesScreen;
-	//Report* ptrReport; 
+	Report* ptrReport; 
 	char choice;
 public:
 	UserInterface();
 	~UserInterface();
 	void Menu();
 };
-
-/*
-
-
-
-
-
-class Report
-{
-private:
-	string DateTime;
-	float Revenue, Expenses, Profit;
-public:
-	void ShowReport();
-}; */
