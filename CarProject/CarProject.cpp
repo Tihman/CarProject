@@ -17,7 +17,8 @@ UserInterface::UserInterface()
 
 UserInterface::~UserInterface()
 {
-
+	delete ptrTimeTable;
+	delete ptrExpensesTable;
 }
 
 void UserInterface::Menu()
@@ -151,8 +152,8 @@ void AddClientScreen::setClient()
 	PList.ShowPrices();
 	cout << "Введите Номер услуги: " << endl;
 	cin >> SerNum;
-	//ifstream in (".\\PriceList.txt"); //for .exe
-	ifstream in ("../PriceList.txt");
+	ifstream in (".\\PriceList.txt"); //for .exe
+	//ifstream in ("../PriceList.txt");
 	
 	if (in.is_open())
 	{
@@ -219,8 +220,8 @@ void AddClientScreen::setClient()
 
 void PriceList::ShowPrices()
 {
-	//ifstream in (".\\PriceList.txt"); //for .exe
-	ifstream in ("../PriceList.txt");
+	ifstream in (".\\PriceList.txt"); //for .exe
+	//ifstream in ("../PriceList.txt");
 	if (in.is_open())
 	{
 		while (getline(in, line))
@@ -435,8 +436,8 @@ void TimeTable::ShowTimeTable()
 void TimeTable::SaveFile()
 {
 	ofstream out; 
-	// (".\\PriceList.txt"); //for .exe
-	out.open("../TimeTable.txt"); 
+	out.open(".\\TimeTable.txt"); //for .exe
+	//out.open("../TimeTable.txt"); 
 	if (out.is_open())
 	{
 		if (ptrClientRecord.empty()) 
@@ -459,8 +460,8 @@ void TimeTable::SaveFile()
 void TimeTable::LoadFile()
 {
 	string line;
-	// (".\\PriceList.txt"); //for .exe
-	ifstream in("../TimeTable.txt"); 
+	ifstream in (".\\TimeTable.txt"); //for .exe
+	//ifstream in("../TimeTable.txt"); 
 	if (in.is_open())
 	{
 		while (getline(in, line))
@@ -497,8 +498,8 @@ void TimeTable::LoadFile()
 void ExpensesTable::LoadExpenses()
 {
 	string line;
-	// (".\\PriceList.txt"); //for .exe
-	ifstream in("../ExpensesTable.txt");
+	ifstream in(".\\ExpensesTable.txt"); //for .exe
+	//ifstream in("../ExpensesTable.txt");
 	if (in.is_open())
 	{
 		while (getline(in, line))
@@ -529,8 +530,8 @@ void ExpensesTable::LoadExpenses()
 void ExpensesTable::SaveExpenses()
 {
 	ofstream out;
-	// (".\\PriceList.txt"); //for .exe
-	out.open("../ExpensesTable.txt");
+	out.open(".\\ExpensesTable.txt"); //for .exe
+	//out.open("../ExpensesTable.txt");
 	if (out.is_open())
 	{
 		if (vecptrExpenses.empty())
@@ -677,8 +678,8 @@ void EditClientScreen::EditInfo(unsigned int YY, unsigned int MM, unsigned int D
 				PList.ShowPrices();
 				cout << "Введите Номер услуги: " << endl;
 				cin >> SerNum;
-				//ifstream in (".\\PriceList.txt"); //for .exe
-				ifstream in("../PriceList.txt");
+				ifstream in (".\\PriceList.txt"); //for .exe
+				//ifstream in("../PriceList.txt");
 
 				if (in.is_open())
 				{
